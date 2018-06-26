@@ -1,0 +1,29 @@
+{
+    "name": "vdhicts/xml-validator",
+    "description": "Validate your XML easily to a XSD schema",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dick van der Heiden",
+            "email": "info@vdhicts.nl",
+            "homepage": "http://www.vdhicts.nl",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "ext-libxml": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Vdhicts\\Dicms\\XmlValidator\\": "src/",
+            "Vdhicts\\Dicms\\XmlValidator\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
