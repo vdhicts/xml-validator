@@ -4,18 +4,23 @@ Validate your XML easily. The main purpose is to validate the XML to a XSD schem
 schema is possible too.
 
 ```php
-$validator = new Validator('books.xml');
+$validator = new Validator();
 
 // Validate with a XSD schema
-$valid = $validator->validate('books.xsd');
+$result = $validator->validate('books.xml', 'books.xsd');
 
 // Or validate without a XSD schema
-$valid = $validator->validate();
+$result = $validator->validate('books.xml');
+
+// Retrieve any errors
+if (!$result->isValid()) {
+    $errors = $result->getErrors();
+}
 ```
 
 ## Requirements
 
-This package requires PHP 7.1 or higher with the libxml extension (which is enabled by default).
+This package requires PHP 7.4 or higher with the libxml extension (which is enabled by default).
 
 ## Installation
 
@@ -38,8 +43,8 @@ per feature. In exchange you will be credited as contributor on this page.
 
 ## Security
 
-If you discover any security related issues in this or other packages of Vdhicts, please email info@vdhicts.nl instead
-of using the issue tracker.
+If you discover any security related issues in this or other packages of Vdhicts, please email security@vdhicts.nl 
+instead of using the issue tracker.
 
 ## License
 
@@ -47,6 +52,5 @@ This package is open-sourced software licensed under the [MIT license](http://op
 
 ## About vdhicts
 
-[Van der Heiden ICT services](https://www.vdhicts.nl) is the name of my personal company for which I work as 
-freelancer. Van der Heiden ICT services develops and implements IT solutions for businesses and educational 
-institutions.
+[Vdhicts](https://www.vdhicts.nl) is the name of my personal company. Vdhicts develops and implements IT solutions for
+businesses and educational institutions.
