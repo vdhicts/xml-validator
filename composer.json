@@ -11,17 +11,23 @@
         }
     ],
     "require": {
-        "php": "^7.1",
-        "ext-libxml": "*"
+        "php": "^7.4",
+        "ext-libxml": "*",
+        "ext-xmlreader": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.0"
+        "phpunit/phpunit": "^9.0",
+        "vimeo/psalm": "^4.10"
     },
     "autoload": {
         "psr-4": {
-            "Vdhicts\\Dicms\\XmlValidator\\": "src/",
-            "Vdhicts\\Dicms\\XmlValidator\\Tests\\": "tests/"
+            "Vdhicts\\XmlValidator\\": "src/",
+            "Vdhicts\\XmlValidator\\Tests\\": "tests/"
         }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "analyse": "vendor/bin/psalm"
     },
     "config": {
         "sort-packages": true
