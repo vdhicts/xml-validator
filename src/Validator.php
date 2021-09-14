@@ -1,136 +1,58 @@
 <?php
 
-namespace Vdhicts\Dicms\XmlValidator;
+namespace Vdhicts\XmlValidator;
 
-use Vdhicts\Dicms\XmlValidator\Exceptions;
+use Vdhicts\XmlValidator\Exceptions\XmlValidatorException;
 use XMLReader;
 
 class Validator
 {
     /**
-     * Holds the XML file location.
-     * @var string
+     * @throws XmlValidatorException
      */
-    private $xmlFileName;
-
-    /**
-     * Holds the XSD file location.
-     * @var string|null
-     */
-    private $xsdFileName = null;
-
-    /**
-     * Validator constructor.
-     * @param string $xmlFile
-     * @param string|null $xsdFile
-     * @throws Exceptions\XmlValidatorException
-     */
-    public function __construct(string $xmlFile, string $xsdFile = null)
+    private function validateFileName(string $fileName): void
     {
-        $this->setXmlFileName($xmlFile);
-        $this->setXsdFileName($xsdFile);
-    }
-
-    /**
-     * Returns the XML file name.
-     * @return string
-     */
-    public function getXmlFileName(): string
-    {
-        return $this->xmlFileName;
-    }
-
-    /**
-     * Stores the XML file name.
-     * @param string $xmlFileName
-     * @throws Exceptions\XmlValidatorException
-     */
-    private function setXmlFileName(string $xmlFileName): void
-    {
-        if (! file_exists($xmlFileName)) {
-            throw Exceptions\XmlValidatorException::fileMissing($xmlFileName);
+        if (!file_exists($fileName)) {
+            throw XmlValidatorException::fileMissing($fileName);
         }
 
-        if (! is_readable($xmlFileName)) {
-            throw Exceptions\XmlValidatorException::fileNotReadable($xmlFileName);
+        if (!is_readable($fileName)) {
+            throw XmlValidatorException::fileNotReadable($fileName);
         }
-
-        $this->xmlFileName = $xmlFileName;
-    }
-
-    /**
-     * Returns the XSD file name.
-     * @return null|string
-     */
-    public function getXsdFileName(): ?string
-    {
-        return $this->xsdFileName;
-    }
-
-    /**
-     * Stores the XSD file name.
-     * @param string|null $xsdFileName
-     * @throws Exceptions\XmlValidatorException
-     */
-    private function setXsdFileName(string $xsdFileName = null): void
-    {
-        if (is_null($xsdFileName)) {
-            $this->xsdFileName = null;
-            return;
-        }
-
-        if (! file_exists($xsdFileName)) {
-            throw Exceptions\XmlValidatorException::fileMissing($xsdFileName);
-        }
-
-        if (! is_readable($xsdFileName)) {
-            throw Exceptions\XmlValidatorException::fileNotReadable($xsdFileName);
-        }
-
-        $this->xsdFileName = $xsdFileName;
     }
 
     /**
      * Validates the XML file.
-     * @return bool
+     * @param string $xmlFileName
+     * @param string|null $xsdFileName
+     * @return ValidationResult
+     * @throws XmlValidatorException
      */
-    public function validate(): bool
+    public function validate(string $xmlFileName, string $xsdFileName = null): ValidationResult
     {
+        // Validate the XML file name
+        $this->validateFileName($xmlFileName);
+
         // Suppress libxml errors
         libxml_use_internal_errors(true);
 
         $xml = new XMLReader();
-        $xml->open($this->getXmlFileName());
+        $xml->open($xmlFileName);
 
-        // When the schema is provided, validate by the schema
-        if (! is_null($this->getXsdFileName())) {
-            $xml->setSchema($this->getXsdFileName());
+        // When a XSD schema is provided, validate by the XSD schema
+        if (!is_null($xsdFileName)) {
+            // Validate the XSD file name
+            $this->validateFileName($xsdFileName);
+
+            // Set the XSD schema
+            $xml->setSchema($xsdFileName);
         }
 
         // Perform a full read of the document to force validation
         while ($xml->read()) {
+            // Do nothing, we need to trigger a full read of the document
+        }
 
-        };
-
-        // Determine if the full read was successful by counting the errors
-        return ! $this->hasErrors();
-    }
-
-    /**
-     * Determines if any XML errors are raised.
-     * @return bool
-     */
-    public function hasErrors(): bool
-    {
-        return count($this->getErrors()) !== 0;
-    }
-
-    /**
-     * Returns an array of LibXMLError objects or an empty array.
-     * @return array
-     */
-    public function getErrors(): array
-    {
-        return libxml_get_errors();
+        return new ValidationResult(libxml_get_errors());
     }
 }

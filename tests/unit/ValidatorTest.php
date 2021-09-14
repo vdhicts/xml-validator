@@ -1,75 +1,82 @@
 <?php
 
-namespace Vdhicts\Dicms\XmlValidator\Tests\Unit;
+namespace Vdhicts\XmlValidator\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Vdhicts\Dicms\XmlValidator;
+use Vdhicts\XmlValidator\Exceptions\XmlValidatorException;
+use Vdhicts\XmlValidator\Validator;
+use Vdhicts\XmlValidator\ValidationResult;
 
 class ValidatorTest extends TestCase
 {
     private $xmlFileName = __DIR__ . '/../support/shiporder.xml';
     private $xmlFileNameInvalidToSchema = __DIR__ . '/../support/shiporder_invalid_to_schema.xml';
-    private $xmlFileNameInvalid = __DIR__ . '/../support/shiporder_invalid_to_schema.xml';
+    private $xmlFileNameInvalid = __DIR__ . '/../support/shiporder_invalid.xml';
     private $xsdFileName = __DIR__ . '/../support/shiporder.xsd';
-
-    public function testClassExists()
-    {
-        $this->assertTrue(class_exists(XmlValidator\Validator::class));
-    }
-
-    public function testInitialisation()
-    {
-        $validator = new XmlValidator\Validator($this->xmlFileName);
-
-        $this->assertInstanceOf(XmlValidator\Validator::class, $validator);
-    }
 
     public function testXml()
     {
-        $validator = new XmlValidator\Validator($this->xmlFileName);
+        $validator = new Validator();
 
-        $this->assertTrue($validator->validate());
+        $this->assertInstanceOf(ValidationResult::class, $validator->validate($this->xmlFileName));
     }
 
     public function testXmlMatchingToSchema()
     {
-        $validator = new XmlValidator\Validator($this->xmlFileName, $this->xsdFileName);
+        $validator = new Validator();
 
-        $this->assertTrue($validator->validate());
+        $result = $validator->validate($this->xmlFileName);
+
+        $this->assertInstanceOf(ValidationResult::class, $result);
+        $this->assertTrue($result->isValid());
     }
 
     public function testXmlNotMatchingToSchema()
     {
-        $validator = new XmlValidator\Validator($this->xmlFileNameInvalidToSchema, $this->xsdFileName);
+        $validator = new Validator();
 
-        $this->assertFalse($validator->validate());
+        $result = $validator->validate($this->xmlFileNameInvalidToSchema, $this->xsdFileName);
+
+        $this->assertInstanceOf(ValidationResult::class, $result);
+        $this->assertFalse($result->isValid());
+        $this->assertIsArray($result->getErrors());
     }
 
     public function testInvalidXml()
     {
-        $validator = new XmlValidator\Validator($this->xmlFileNameInvalid);
+        $validator = new Validator();
 
-        $this->assertFalse($validator->validate());
+        $result = $validator->validate($this->xmlFileNameInvalid);
+
+        $this->assertFalse($result->isValid());
+        $this->assertIsArray($result->getErrors());
     }
 
     public function testInvalidXmlWithSchema()
     {
-        $validator = new XmlValidator\Validator($this->xmlFileNameInvalid, $this->xsdFileName);
+        $validator = new Validator();
 
-        $this->assertFalse($validator->validate());
+        $result = $validator->validate($this->xmlFileNameInvalid, $this->xsdFileName);
+
+        $this->assertFalse($result->isValid());
+        $this->assertIsArray($result->getErrors());
     }
 
     public function testInvalidXmlFileName()
     {
-        $this->expectException(XmlValidator\Exceptions\XmlValidatorException::class);
+        $validator = new Validator();
 
-        new XmlValidator\Validator('randomFileName.xml');
+        $this->expectException(XmlValidatorException::class);
+
+        $validator->validate('randomFileName.xml');
     }
 
     public function testInvalidXsdFileName()
     {
-        $this->expectException(XmlValidator\Exceptions\XmlValidatorException::class);
+        $validator = new Validator();
 
-        new XmlValidator\Validator($this->xmlFileName, 'randomFileName.xsd');
+        $this->expectException(XmlValidatorException::class);
+
+        $validator->validate($this->xmlFileName, 'randomFileName.xsd');
     }
 }

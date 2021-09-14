@@ -1,16 +1,11 @@
 <?php
 
-namespace Vdhicts\Dicms\XmlValidator\Exceptions;
+namespace Vdhicts\XmlValidator\Exceptions;
 
 use Exception;
 
 class XmlValidatorException extends Exception
 {
-    /**
-     * Returns an exception when the file is missing.
-     * @param string $file
-     * @return XmlValidatorException
-     */
     public static function fileMissing(string $file): XmlValidatorException
     {
         return new self(
@@ -18,11 +13,6 @@ class XmlValidatorException extends Exception
         );
     }
 
-    /**
-     * Returns an exception when the file isn't readable.
-     * @param string $file
-     * @return XmlValidatorException
-     */
     public static function fileNotReadable(string $file): XmlValidatorException
     {
         return new self(
