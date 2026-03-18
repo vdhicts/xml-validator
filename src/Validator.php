@@ -23,7 +23,7 @@ class Validator
 
     /**
      * Validates the XML file.
-     * 
+     *
      * @throws XmlValidatorException
      */
     public function validate(string $xmlFileName, ?string $xsdFileName = null): ValidationResult
