@@ -36,8 +36,7 @@ class Validator
         // Suppress libxml errors
         libxml_use_internal_errors(true);
 
-        $xml = new XMLReader();
-        $xml->open($xmlFileName);
+        $xml = XMLReader::open($xmlFileName);
 
         // When a XSD schema is provided, validate by the XSD schema
         if (!is_null($xsdFileName)) {
