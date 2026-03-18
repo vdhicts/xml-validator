@@ -23,12 +23,10 @@ class Validator
 
     /**
      * Validates the XML file.
-     * @param string $xmlFileName
-     * @param string|null $xsdFileName
-     * @return ValidationResult
+     *
      * @throws XmlValidatorException
      */
-    public function validate(string $xmlFileName, string $xsdFileName = null): ValidationResult
+    public function validate(string $xmlFileName, ?string $xsdFileName = null): ValidationResult
     {
         // Validate the XML file name
         $this->validateFileName($xmlFileName);
@@ -36,8 +34,7 @@ class Validator
         // Suppress libxml errors
         libxml_use_internal_errors(true);
 
-        $xml = new XMLReader();
-        $xml->open($xmlFileName);
+        $xml = XMLReader::open($xmlFileName);
 
         // When a XSD schema is provided, validate by the XSD schema
         if (!is_null($xsdFileName)) {

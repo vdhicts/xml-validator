@@ -2,13 +2,11 @@
 
 namespace Vdhicts\XmlValidator;
 
-class ValidationResult
+readonly class ValidationResult
 {
-    private array $errors;
-
-    public function __construct(array $errors = [])
-    {
-        $this->errors = $errors;
+    public function __construct(
+        private array $errors = []
+    ) {
     }
 
     public function isValid(): bool

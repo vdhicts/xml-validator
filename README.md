@@ -20,7 +20,7 @@ if (!$result->isValid()) {
 
 ## Requirements
 
-This package requires PHP 7.4 or higher with the libxml extension (which is enabled by default).
+This package requires PHP 8.2 or higher with the libxml extension (which is enabled by default).
 
 ## Installation
 
