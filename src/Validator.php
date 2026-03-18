@@ -23,12 +23,10 @@ class Validator
 
     /**
      * Validates the XML file.
-     * @param string $xmlFileName
-     * @param string|null $xsdFileName
-     * @return ValidationResult
+     * 
      * @throws XmlValidatorException
      */
-    public function validate(string $xmlFileName, string $xsdFileName = null): ValidationResult
+    public function validate(string $xmlFileName, ?string $xsdFileName = null): ValidationResult
     {
         // Validate the XML file name
         $this->validateFileName($xmlFileName);
